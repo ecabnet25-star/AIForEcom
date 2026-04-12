@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>How to Use AI to Write Amazon Listing Titles and Bullet Points — AIForEcom</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" content="A step-by-step tutorial on using AI to write Amazon listing titles and bullet points that rank and convert." />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+      /* Nav */
+      #site-nav {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+        background: rgba(36,41,67,0.97); display: flex;
+        align-items: center; justify-content: space-between;
+        padding: 0 2em; height: 54px;
+      }
+      #site-nav .nav-logo {
+        font-size: 1.1em; font-weight: 600; color: #fff;
+        text-decoration: none; letter-spacing: 0.03em;
+      }
+      #site-nav ul { list-style: none; display: flex; gap: 0.2em; margin: 0; padding: 0; }
+      #site-nav ul li a {
+        color: rgba(255,255,255,0.75); text-decoration: none;
+        font-size: 0.82em; letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 0.5em 0.9em; border-radius: 4px;
+        transition: color 0.2s, background 0.2s;
+      }
+      #site-nav ul li a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+      #site-nav ul li a.nav-highlight {
+        color: #fff; background: rgba(99,179,237,0.25);
+        border: 1px solid rgba(99,179,237,0.5);
+      }
+      body { padding-top: 54px; }
+
+      /* Article layout */
+      .article-wrap {
+        max-width: 740px;
+        margin: 0 auto;
+        padding: 4em 2em 5em;
+      }
+      .article-wrap .article-meta {
+        font-size: 0.78em;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #6366f1;
+        font-weight: 700;
+        margin-bottom: 0.8em;
+      }
+      .article-wrap h1 {
+        font-size: 2em;
+        line-height: 1.25;
+        color: #1a1a2e;
+        margin-bottom: 0.6em;
+      }
+      .article-wrap .article-intro {
+        font-size: 1.08em;
+        color: #444;
+        line-height: 1.7;
+        border-left: 3px solid #6366f1;
+        padding-left: 1em;
+        margin-bottom: 2em;
+      }
+      .article-wrap h2 {
+        font-size: 1.3em;
+        color: #1a1a2e;
+        margin: 2em 0 0.5em;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid #e8eaf0;
+      }
+      .article-wrap h3 {
+        font-size: 1.05em;
+        color: #1a1a2e;
+        margin: 1.5em 0 0.4em;
+        font-weight: 700;
+      }
+      .article-wrap p {
+        font-size: 0.95em;
+        line-height: 1.8;
+        color: #333;
+        margin-bottom: 1.2em;
+      }
+      .article-wrap ul, .article-wrap ol {
+        margin: 0 0 1.2em 1.5em;
+        font-size: 0.95em;
+        line-height: 1.8;
+        color: #333;
+      }
+      .article-wrap ul li { list-style: disc; }
+      .article-wrap ol li { list-style: decimal; }
+      .article-wrap table {
+        width: 100%; border-collapse: collapse;
+        font-size: 0.88em; margin: 1.5em 0;
+      }
+      .article-wrap table th {
+        background: #f3f4f6; text-align: left;
+        padding: 0.6em 0.8em; font-weight: 700;
+        border: 1px solid #e2e4e9; color: #1a1a2e;
+      }
+      .article-wrap table td {
+        padding: 0.55em 0.8em;
+        border: 1px solid #e2e4e9;
+        color: #333;
+      }
+      .article-wrap table tr:nth-child(even) td { background: #f9fafb; }
+      .article-wrap code {
+        background: #f3f4f6; border-radius: 4px;
+        padding: 0.15em 0.4em; font-size: 0.88em;
+        font-family: 'Courier New', monospace; color: #4f46e5;
+      }
+      .article-wrap pre {
+        background: #1e1e2e; border-radius: 6px;
+        padding: 1.2em 1.4em; margin: 1.4em 0;
+        overflow-x: auto;
+      }
+      .article-wrap pre code {
+        background: none; color: #cdd6f4;
+        font-size: 0.85em; padding: 0;
+      }
+      .article-wrap blockquote {
+        border-left: 3px solid #6366f1;
+        margin: 1.5em 0; padding: 0.8em 1.2em;
+        background: #f5f5ff; border-radius: 0 6px 6px 0;
+        color: #444; font-style: italic;
+      }
+      .affiliate-note {
+        background: #f0fdf4; border: 1px solid #bbf7d0;
+        border-radius: 6px; padding: 1em 1.2em;
+        font-size: 0.82em; color: #166534;
+        margin: 2.5em 0 1em;
+      }
+      .back-link {
+        display: inline-block;
+        font-size: 0.82em; font-weight: 700;
+        letter-spacing: 0.06em; text-transform: uppercase;
+        color: #6366f1; text-decoration: none;
+        margin-bottom: 2em;
+      }
+      .back-link::before { content: "← "; }
+      .back-link:hover { color: #4f46e5; }
+
+      @media screen and (max-width: 640px) {
+        #site-nav ul { display: none; }
+        .article-wrap { padding: 2.5em 1.2em 4em; }
+        .article-wrap h1 { font-size: 1.5em; }
+      }
+    </style>
+  </head>
+  <body class="is-preload">
+
+    <nav id="site-nav">
+      <a href="index.html" class="nav-logo">AIForEcom</a>
+      <ul>
+        <li><a href="index.html#articles">Reviews</a></li>
+        <li><a href="index.html#articles">Comparisons</a></li>
+        <li><a href="index.html#articles">Tutorials</a></li>
+        <li><a href="index.html#tools">Top Tools</a></li>
+        <li><a href="stack-finder.html" class="nav-highlight">AI Stack Finder</a></li>
+      </ul>
+    </nav>
+
+    <section class="main style1">
+      <div class="article-wrap">
+
+        <a href="index.html" class="back-link">Back to all articles</a>
+
+        <p class="article-meta">Tutorial</p>
+        <h1>How to Use AI to Write Amazon Listing Titles and Bullet Points</h1>
+        <p class="article-intro">Amazon's A9 algorithm decides which products show up when someone searches for what you're selling.</p>
+
+        <p>The three biggest factors it looks at are relevance (do your title and bullet points contain the right keywords), performance (click-through rate and conversion rate), and customer satisfaction. AI can directly help with the first one — and indirectly improve the others.</p>
+        <p>This tutorial shows you exactly how to use AI tools to write Amazon listing titles and bullet points that are keyword-rich, readable, and built to convert.</p>
+
+        <h2>Why Amazon listing copy matters more than most sellers realise</h2>
+        <p>A product buried on page three of Amazon search results is effectively invisible. Most buyers never scroll past the first page, and within that page, your title and main image are doing all the heavy lifting to earn a click. Once someone clicks, your bullet points need to close the sale.</p>
+        <p>Most sellers write their listings once, never revisit them, and wonder why conversion is flat. AI makes it fast and cheap to test better versions — which is why sellers using AI-assisted listings are increasingly outperforming those who aren't.</p>
+
+        <h2>Step 1: Research your keywords first</h2>
+        <p>AI can write great copy, but it can't tell you which keywords to target. Do this part manually before you open any AI tool.</p>
+        <p>Go to Amazon and type your main product term into the search bar. Look at the autocomplete suggestions — these are real searches people are making. Note the variations. Then look at the top three organic results for your main keyword. Read their titles carefully: what phrases are they repeating? Those are your target keywords.</p>
+        <p>Free tools that help here: Helium 10's free Chrome extension shows search volume estimates for any Amazon keyword. Google Keyword Planner (free with a Google account) gives you broader search data that often reflects Amazon behaviour too.</p>
+        <p>Aim to have a primary keyword (the most specific, highest-intent phrase), two or three secondary keywords, and a handful of feature-specific phrases (
