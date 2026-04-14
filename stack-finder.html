@@ -1,0 +1,677 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>AI Stack Finder — AIForEcom</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="description" content="Answer 5 questions and get a personalised AI tool stack for your e-commerce store. Free, instant, no email required." />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			/* ── Nav ── */
+			#site-nav {
+				position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+				background: rgba(36,41,67,0.97); display: flex;
+				align-items: center; justify-content: space-between;
+				padding: 0 2em; height: 54px;
+			}
+			#site-nav .nav-logo { font-size:1.1em; font-weight:600; color:#fff; text-decoration:none; letter-spacing:.03em; }
+			#site-nav ul { list-style:none; display:flex; gap:.2em; margin:0; padding:0; }
+			#site-nav ul li a {
+				color:rgba(255,255,255,.75); text-decoration:none; font-size:.82em;
+				letter-spacing:.08em; text-transform:uppercase; padding:.5em .9em;
+				border-radius:4px; transition:color .2s,background .2s;
+			}
+			#site-nav ul li a:hover { color:#fff; background:rgba(255,255,255,.1); }
+			#site-nav ul li a.nav-highlight {
+				color:#fff; background:rgba(99,179,237,.25);
+				border:1px solid rgba(99,179,237,.5);
+			}
+			body { padding-top:54px; }
+			#header { margin-top:-54px; padding-top:54px; }
+
+			/* ── Quiz container ── */
+			#quiz-wrap {
+				max-width: 620px;
+				margin: 0 auto;
+				padding: 3em 1.5em 5em;
+			}
+
+			/* Progress steps */
+			#progress {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0;
+				margin-bottom: 2.5em;
+			}
+			.step-dot {
+				width: 32px; height: 32px; border-radius: 50%;
+				display: flex; align-items: center; justify-content: center;
+				font-size: .78em; font-weight: 700;
+				background: #e8eaf0; color: #888;
+				transition: background .3s, color .3s;
+				position: relative; z-index: 1;
+				flex-shrink: 0;
+			}
+			.step-dot.active { background: #6366f1; color: #fff; }
+			.step-dot.done { background: #10b981; color: #fff; }
+			.step-connector {
+				height: 2px; width: 40px; background: #e8eaf0;
+				transition: background .3s; flex-shrink: 0;
+			}
+			.step-connector.done { background: #10b981; }
+
+			/* Question card */
+			.q-card {
+				background: #fff;
+				border: 1px solid #e8eaf0;
+				border-radius: 12px;
+				padding: 2em 2em 1.6em;
+				margin-bottom: 1.5em;
+				display: none;
+				animation: fadeUp .25s ease both;
+			}
+			.q-card.active { display: block; }
+			@keyframes fadeUp {
+				from { opacity: 0; transform: translateY(12px); }
+				to   { opacity: 1; transform: translateY(0); }
+			}
+			.q-label {
+				font-size: .72em; font-weight: 700; letter-spacing: .12em;
+				text-transform: uppercase; color: #6366f1; margin-bottom: .6em;
+			}
+			.q-card h2 {
+				font-size: 1.25em; color: #1a1a2e; margin: 0 0 1.4em;
+				line-height: 1.35;
+			}
+
+			/* Option cards */
+			.options-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: .75em;
+			}
+			.options-grid.single-col { grid-template-columns: 1fr; }
+			.opt {
+				border: 1.5px solid #e8eaf0;
+				border-radius: 8px;
+				padding: .85em 1em;
+				cursor: pointer;
+				transition: border-color .15s, background .15s;
+				text-align: left;
+			}
+			.opt:hover { border-color: #a5b4fc; background: #f5f5ff; }
+			.opt.selected { border-color: #6366f1; background: #f0f0ff; }
+			.opt .opt-label { font-size: .92em; font-weight: 600; color: #1a1a2e; display: block; }
+			.opt .opt-desc { font-size: .78em; color: #777; display: block; margin-top: .15em; }
+			.opt.selected .opt-label { color: #4f46e5; }
+
+			/* Nav buttons */
+			#q-nav {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 1em;
+				margin-top: .5em;
+			}
+			#btn-back {
+				background: none; border: 1.5px solid #e8eaf0;
+				color: #888; padding: .7em 1.4em; border-radius: 6px;
+				cursor: pointer; font-size: .88em; font-weight: 600;
+				transition: border-color .2s, color .2s;
+			}
+			#btn-back:hover { border-color: #aaa; color: #444; }
+			#btn-back:disabled { opacity: 0; pointer-events: none; }
+			#btn-next {
+				background: #6366f1; color: #fff;
+				border: none; padding: .75em 2em; border-radius: 6px;
+				cursor: pointer; font-size: .92em; font-weight: 700;
+				transition: background .2s, opacity .2s;
+				margin-left: auto;
+			}
+			#btn-next:hover { background: #4f46e5; }
+			#btn-next:disabled { opacity: .45; cursor: not-allowed; }
+
+			/* Loading */
+			#loading {
+				display: none; text-align: center; padding: 3em 1em;
+			}
+			.spinner {
+				width: 48px; height: 48px; border: 3px solid #e8eaf0;
+				border-top-color: #6366f1; border-radius: 50%;
+				animation: spin 1s linear infinite; margin: 0 auto 1.5em;
+			}
+			@keyframes spin { to { transform: rotate(360deg); } }
+			#loading p { color: #777; font-size: .95em; }
+
+			/* Results */
+			#results { display: none; }
+			.results-header {
+				background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+				border-radius: 12px; padding: 1.8em 2em;
+				color: #fff; margin-bottom: 1.5em;
+			}
+			.results-header h2 {
+				font-size: 1.4em; margin: 0 0 .5em; color: #fff;
+			}
+			.results-header p {
+				font-size: .92em; opacity: .9; margin: 0; line-height: 1.6;
+			}
+			.cost-badge {
+				display: inline-block; background: rgba(255,255,255,.2);
+				border: 1px solid rgba(255,255,255,.35); border-radius: 20px;
+				padding: .25em .9em; font-size: .78em; font-weight: 700;
+				color: #fff; margin-top: .8em;
+			}
+
+			.tool-card {
+				background: #fff; border: 1px solid #e8eaf0;
+				border-radius: 10px; padding: 1.4em 1.5em;
+				margin-bottom: .85em; display: flex;
+				align-items: flex-start; gap: 1em;
+			}
+			.tool-card.priority-first { border-left: 3px solid #6366f1; }
+			.priority-tag {
+				display: inline-block; font-size: .68em; font-weight: 700;
+				letter-spacing: .1em; text-transform: uppercase;
+				padding: .2em .6em; border-radius: 3px; margin-bottom: .4em;
+			}
+			.tag-first { background: #ede9fe; color: #5b21b6; }
+			.tag-next  { background: #d1fae5; color: #065f46; }
+			.tag-scale { background: #fef3c7; color: #92400e; }
+			.tool-card .tool-info { flex: 1; }
+			.tool-card .tool-name { font-size: 1em; font-weight: 700; color: #1a1a2e; margin-bottom: .2em; }
+			.tool-card .tool-cat  { font-size: .75em; color: #888; text-transform: uppercase; letter-spacing: .08em; }
+			.tool-card .tool-why  { font-size: .88em; color: #444; line-height: 1.5; margin: .4em 0 .6em; }
+			.tool-card .tool-meta { display: flex; align-items: center; gap: .8em; flex-wrap: wrap; }
+			.tool-price { font-size: .78em; font-weight: 700; color: #059669; }
+			.tool-link {
+				font-size: .78em; font-weight: 700; color: #6366f1;
+				text-decoration: none; padding: .3em .75em;
+				border: 1px solid #c7d2fe; border-radius: 4px;
+				transition: background .15s;
+			}
+			.tool-link:hover { background: #f0f0ff; }
+			.aff-label { font-size: .68em; color: #aaa; font-style: italic; }
+
+			.first-step-box {
+				background: #f0fdf4; border: 1px solid #bbf7d0;
+				border-radius: 8px; padding: 1.2em 1.4em; margin-top: 1.5em;
+			}
+			.first-step-box strong { font-size: .8em; text-transform: uppercase;
+				letter-spacing: .1em; color: #059669; display: block; margin-bottom: .4em; }
+			.first-step-box p { font-size: .92em; color: #166534; margin: 0; line-height: 1.5; }
+
+			.retake-btn {
+				display: block; text-align: center; margin-top: 1.8em;
+				font-size: .82em; color: #aaa; cursor: pointer;
+				text-decoration: underline;
+			}
+			.retake-btn:hover { color: #6366f1; }
+
+			.error-box {
+				background: #fef2f2; border: 1px solid #fecaca;
+				border-radius: 8px; padding: 1.2em 1.4em;
+				font-size: .9em; color: #991b1b; margin-bottom: 1em;
+				display: none;
+			}
+
+			@media screen and (max-width: 640px) {
+				#site-nav ul { display: none; }
+				.options-grid { grid-template-columns: 1fr; }
+				#quiz-wrap { padding: 2em 1em 4em; }
+				.step-connector { width: 20px; }
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<nav id="site-nav">
+			<a href="index.html" class="nav-logo">AIForEcom</a>
+			<ul>
+				<li><a href="index.html#articles">Reviews</a></li>
+				<li><a href="index.html#articles">Comparisons</a></li>
+				<li><a href="index.html#articles">Tutorials</a></li>
+				<li><a href="index.html#tools">Top Tools</a></li>
+				<li><a href="stack-finder.html" class="nav-highlight">AI Stack Finder</a></li>
+			</ul>
+		</nav>
+
+		<section id="header">
+			<div class="inner">
+				<span class="icon solid major fa-layer-group"></span>
+				<h1>Find your perfect AI stack</h1>
+				<p>5 questions. Personalised recommendation.<br />
+				Free, instant — no email required.</p>
+			</div>
+		</section>
+
+		<section class="main style1">
+			<div class="container">
+				<div id="quiz-wrap">
+
+					<div id="error-box" class="error-box"></div>
+
+					<!-- Progress dots -->
+					<div id="progress"></div>
+
+					<!-- Questions -->
+					<div id="questions"></div>
+
+					<!-- Nav buttons -->
+					<div id="q-nav" style="display:none">
+						<button id="btn-back" disabled>Back</button>
+						<button id="btn-next" disabled>Next</button>
+					</div>
+
+					<!-- Loading -->
+					<div id="loading">
+						<div class="spinner"></div>
+						<p id="loading-msg">Building your personalised stack&hellip;</p>
+					</div>
+
+					<!-- Results -->
+					<div id="results"></div>
+
+				</div>
+			</div>
+		</section>
+
+		<section id="footer">
+			<ul class="copyright">
+				<li>&copy; 2026 AIForEcom</li>
+				<li><a href="affiliate-disclosure.html">Affiliate disclosure</a></li>
+				<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+			</ul>
+		</section>
+
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+		<script>
+		// ─────────────────────────────────────────
+		// CONFIG — replace with your Cloudflare Worker URL once deployed
+		// Leave as empty string to use smart fallback recommendations
+		// ─────────────────────────────────────────
+		const WORKER_URL = '';
+
+		// ─────────────────────────────────────────
+		// QUIZ DATA
+		// ─────────────────────────────────────────
+		const questions = [
+			{
+				id: 'platform',
+				label: 'Question 1 of 5',
+				question: 'What platform do you sell on?',
+				options: [
+					{ value: 'shopify', label: 'Shopify' },
+					{ value: 'etsy', label: 'Etsy' },
+					{ value: 'amazon', label: 'Amazon FBA' },
+					{ value: 'multiple', label: 'Multiple platforms', desc: 'Shopify + Etsy, etc.' },
+					{ value: 'not-yet', label: 'Not selling yet', desc: 'Setting things up' }
+				]
+			},
+			{
+				id: 'revenue',
+				label: 'Question 2 of 5',
+				question: "How's your store doing right now?",
+				options: [
+					{ value: 'starting', label: 'Just getting started', desc: 'Under $1k/month' },
+					{ value: 'small',    label: 'Small but growing',   desc: '$1k–$5k/month' },
+					{ value: 'growing',  label: 'Gaining momentum',    desc: '$5k–$20k/month' },
+					{ value: 'established', label: 'Established store', desc: '$20k+/month' }
+				]
+			},
+			{
+				id: 'pain',
+				label: 'Question 3 of 5',
+				question: "What's your biggest headache right now?",
+				options: [
+					{ value: 'writing', label: 'Writing product copy', desc: 'Descriptions, ads, email' },
+					{ value: 'support', label: 'Customer support',     desc: 'Messages, queries, returns' },
+					{ value: 'email',   label: 'Email marketing',      desc: 'Flows, campaigns, lists' },
+					{ value: 'seo',     label: 'SEO and listings',     desc: 'Rankings, keywords, visibility' },
+					{ value: 'photos',  label: 'Product photos',       desc: 'Backgrounds, lifestyle shots' }
+				]
+			},
+			{
+				id: 'budget',
+				label: 'Question 4 of 5',
+				question: 'What is your monthly tool budget?',
+				options: [
+					{ value: 'zero',     label: 'Free tools only',  desc: '$0 — free plans only' },
+					{ value: 'small',    label: 'A little',         desc: 'Up to $30/month' },
+					{ value: 'medium',   label: 'Reasonable',       desc: '$30–$70/month' },
+					{ value: 'flexible', label: 'Flexible',         desc: '$70–$150/month' }
+				]
+			},
+			{
+				id: 'tech',
+				label: 'Question 5 of 5',
+				question: 'How comfortable are you with tech?',
+				options: [
+					{ value: 'not',         label: 'Not at all',       desc: 'I want plug-and-play' },
+					{ value: 'little',      label: 'A little bit',     desc: 'I can follow instructions' },
+					{ value: 'comfortable', label: 'Pretty comfortable', desc: 'I can figure things out' }
+				]
+			}
+		];
+
+		// ─────────────────────────────────────────
+		// STATE
+		// ─────────────────────────────────────────
+		let state = { current: 0, answers: {} };
+
+		// ─────────────────────────────────────────
+		// INIT
+		// ─────────────────────────────────────────
+		function init() {
+			buildProgress();
+			buildQuestions();
+			renderStep(0);
+			document.getElementById('btn-back').addEventListener('click', back);
+			document.getElementById('btn-next').addEventListener('click', next);
+		}
+
+		function buildProgress() {
+			const el = document.getElementById('progress');
+			let html = '';
+			questions.forEach((q, i) => {
+				if (i > 0) html += '<div class="step-connector" id="conn-' + (i-1) + '"></div>';
+				html += '<div class="step-dot" id="dot-' + i + '">' + (i+1) + '</div>';
+			});
+			el.innerHTML = html;
+		}
+
+		function buildQuestions() {
+			const el = document.getElementById('questions');
+			let html = '';
+			questions.forEach((q, qi) => {
+				const singleCol = q.options.length >= 5 ? ' single-col' : '';
+				html += '<div class="q-card" id="q-' + qi + '">';
+				html += '<div class="q-label">' + q.label + '</div>';
+				html += '<h2>' + q.question + '</h2>';
+				html += '<div class="options-grid' + singleCol + '">';
+				q.options.forEach(opt => {
+					const desc = opt.desc ? '<span class="opt-desc">' + opt.desc + '</span>' : '';
+					html += '<div class="opt" data-q="' + qi + '" data-val="' + opt.value + '">'
+						+ '<span class="opt-label">' + opt.label + '</span>' + desc + '</div>';
+				});
+				html += '</div></div>';
+			});
+			el.innerHTML = html;
+
+			// Option click handlers
+			document.querySelectorAll('.opt').forEach(opt => {
+				opt.addEventListener('click', () => {
+					const qi = parseInt(opt.dataset.q);
+					const val = opt.dataset.val;
+					// Deselect others in same question
+					document.querySelectorAll('.opt[data-q="' + qi + '"]').forEach(o => o.classList.remove('selected'));
+					opt.classList.add('selected');
+					// Store answer
+					state.answers[questions[qi].id] = val;
+					// Enable next button
+					document.getElementById('btn-next').disabled = false;
+				});
+			});
+		}
+
+		function renderStep(idx) {
+			// Update question visibility
+			document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active'));
+			const card = document.getElementById('q-' + idx);
+			if (card) card.classList.add('active');
+
+			// Update dots
+			document.querySelectorAll('.step-dot').forEach((dot, i) => {
+				dot.classList.remove('active', 'done');
+				if (i < idx) dot.classList.add('done');
+				if (i === idx) dot.classList.add('active');
+			});
+
+			// Update connectors
+			document.querySelectorAll('.step-connector').forEach((conn, i) => {
+				conn.classList.toggle('done', i < idx);
+			});
+
+			// Back button
+			document.getElementById('btn-back').disabled = (idx === 0);
+
+			// Next button — disabled if no answer for this question
+			const hasAnswer = !!state.answers[questions[idx].id];
+			const nextBtn = document.getElementById('btn-next');
+			nextBtn.disabled = !hasAnswer;
+
+			// Last question — change button label
+			if (idx === questions.length - 1) {
+				nextBtn.textContent = 'Get my stack';
+			} else {
+				nextBtn.textContent = 'Next';
+			}
+
+			document.getElementById('q-nav').style.display = 'flex';
+		}
+
+		function back() {
+			if (state.current > 0) {
+				state.current--;
+				renderStep(state.current);
+			}
+		}
+
+		function next() {
+			if (state.current < questions.length - 1) {
+				state.current++;
+				renderStep(state.current);
+			} else {
+				submitQuiz();
+			}
+		}
+
+		// ─────────────────────────────────────────
+		// SUBMIT + API CALL
+		// ─────────────────────────────────────────
+		const loadingMessages = [
+			'Analysing your answers&hellip;',
+			'Matching tools to your situation&hellip;',
+			'Building your personalised stack&hellip;',
+			'Almost there&hellip;'
+		];
+
+		function submitQuiz() {
+			// Hide quiz, show loading
+			document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active'));
+			document.getElementById('q-nav').style.display = 'none';
+			document.getElementById('progress').style.display = 'none';
+			document.getElementById('loading').style.display = 'block';
+
+			// Cycle loading messages
+			let msgIdx = 0;
+			const msgInterval = setInterval(() => {
+				msgIdx = (msgIdx + 1) % loadingMessages.length;
+				document.getElementById('loading-msg').innerHTML = loadingMessages[msgIdx];
+			}, 1400);
+
+			const finish = (data) => {
+				clearInterval(msgInterval);
+				document.getElementById('loading').style.display = 'none';
+				renderResults(data);
+			};
+
+			if (WORKER_URL) {
+				callWorker(state.answers)
+					.then(finish)
+					.catch(err => {
+						console.warn('API call failed, using fallback:', err);
+						finish(fallbackRecommendation(state.answers));
+					});
+			} else {
+				// Simulate a short delay then show fallback
+				setTimeout(() => finish(fallbackRecommendation(state.answers)), 1800);
+			}
+		}
+
+		async function callWorker(answers) {
+			const res = await fetch(WORKER_URL, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ answers })
+			});
+			if (!res.ok) throw new Error('Worker returned ' + res.status);
+			const data = await res.json();
+			if (data.error) throw new Error(data.error);
+			return data;
+		}
+
+		// ─────────────────────────────────────────
+		// FALLBACK RULE-BASED RECOMMENDATIONS
+		// ─────────────────────────────────────────
+		function fallbackRecommendation(a) {
+			const isFree = a.budget === 'zero';
+			const isSmall = a.budget === 'small';
+			const isEtsy = a.platform === 'etsy';
+			const isAmazon = a.platform === 'amazon';
+			const tools = [];
+
+			// Lead with the pain point
+			if (a.pain === 'writing') {
+				tools.push(isFree
+					? { name:'Shopify Magic', category:'Copywriting', why:'Built into Shopify — write product descriptions with one click, no extra cost.', price:'Free', affiliate:false, link:null, priority:'Start here' }
+					: { name:'Copy.ai', category:'Copywriting', why:'Multiple description variations for every product, with a generous free plan to test before paying.', price:'Free plan / $36/mo', affiliate:false, link:null, priority:'Start here' }
+				);
+			}
+			if (a.pain === 'support') {
+				tools.push(isFree
+					? { name:'Shopify Inbox', category:'Customer support', why:'Free live chat built into Shopify. Handles the most common pre-purchase questions automatically.', price:'Free', affiliate:false, link:null, priority:'Start here' }
+					: { name:'Tidio', category:'Customer support', why:"Lyro AI resolves 70%+ of customer queries without you lifting a finger. Free plan covers 50 conversations/month.", price:'Free plan / $29/mo', affiliate:true, link:'https://www.tidio.com/?ref=aiforecom', priority:'Start here' }
+				);
+			}
+			if (a.pain === 'email') {
+				tools.push({ name:'Omnisend', category:'Email marketing', why:'Set up your abandoned cart and welcome flows once and they earn forever. Free plan covers 500 emails/month.', price:'Free plan / $16/mo', affiliate:true, link:'https://www.omnisend.com/?ref=aiforecom', priority:'Start here' });
+			}
+			if (a.pain === 'seo') {
+				tools.push(isEtsy
+					? { name:'eRank', category:'Etsy SEO', why:"Shows you which keywords Etsy buyers are actually searching. The free tier covers everything a new seller needs.", price:'Free plan / $9.99/mo', affiliate:false, link:null, priority:'Start here' }
+					: { name:'SEOAnt', category:'Shopify SEO', why:'Scans your store for SEO issues and fixes meta tags, alt text, and broken links automatically.', price:'Free plan / $29.99/mo', affiliate:false, link:null, priority:'Start here' }
+				);
+			}
+			if (a.pain === 'photos') {
+				tools.push({ name:'Photoroom', category:'Product photos', why:'Remove backgrounds and create styled product shots in seconds. The free plan handles one image at a time.', price:'Free plan / $12.99/mo', affiliate:false, link:null, priority:'Start here' });
+			}
+
+			// Add support if not already the lead
+			if (a.pain !== 'support' && !isFree) {
+				tools.push({ name:'Tidio', category:'Customer support', why:'AI handles common queries 24/7 so you can focus on growing instead of answering "where is my order".', price:'Free plan / $29/mo', affiliate:true, link:'https://www.tidio.com/?ref=aiforecom', priority:'Add next' });
+			}
+
+			// Add email if not already the lead
+			if (a.pain !== 'email') {
+				tools.push({ name:'Omnisend', category:'Email marketing', why:'Abandoned cart emails alone typically recover 5–15% of lost sales. Set it up once, earn from it forever.', price:'Free plan / $16/mo', affiliate:true, link:'https://www.omnisend.com/?ref=aiforecom', priority: isFree ? 'Add next' : 'Add next' });
+			}
+
+			// Add Etsy SEO if Etsy seller and not already the lead
+			if (isEtsy && a.pain !== 'seo') {
+				tools.push({ name:'eRank', category:'Etsy SEO', why:'Etsy search is different from Google. eRank shows you the exact keywords your buyers are searching.', price:'Free plan / $9.99/mo', affiliate:false, link:null, priority:'Add next' });
+			}
+
+			// Writing tool if not already the lead and budget allows
+			if (a.pain !== 'writing' && !isFree) {
+				tools.push({ name:'Copy.ai', category:'Copywriting', why:'Stop writing descriptions from scratch. Copy.ai gives you multiple angles for every product in seconds.', price:'Free plan / $36/mo', affiliate:false, link:null, priority: tools.length >= 3 ? 'When you scale' : 'Add next' });
+			}
+
+			// Build summary
+			const platformLabel = { shopify:'Shopify store', etsy:'Etsy shop', amazon:'Amazon FBA business', multiple:'multi-platform store', 'not-yet':'e-commerce store' }[a.platform] || 'store';
+			const painLabel = { writing:'product copy', support:'customer support', email:'email marketing', seo:'SEO', photos:'product photos' }[a.pain] || 'your biggest challenge';
+
+			const summary = `Based on your answers, we've built a stack focused on your ${platformLabel} — starting with ${painLabel} since that's your biggest pain point right now. ${isFree ? 'Every tool below has a genuinely useful free plan.' : 'Each tool below has a free plan so you can test before paying.'}`;
+
+			const monthlyCost = isFree ? '$0/month' : isSmall ? 'From $29/month' : 'From $45/month';
+
+			const firstStepMap = {
+				writing: isFree ? 'Open Shopify Magic in your admin and rewrite your three best-selling product descriptions today.' : 'Sign up for Copy.ai\'s free plan and write descriptions for your five most-viewed products.',
+				support: isFree ? 'Install Shopify Inbox from the Shopify App Store — it takes five minutes and is free forever.' : 'Start Tidio\'s free trial and connect it to your Shopify store. The setup takes about 15 minutes.',
+				email: 'Sign up for Omnisend\'s free plan and set up your abandoned cart flow — this single flow will likely be your best-performing automation.',
+				seo: isEtsy ? 'Create a free eRank account and run a keyword audit on your five most-viewed listings.' : 'Install SEOAnt from the Shopify App Store and run the free SEO scan on your store.',
+				photos: 'Download Photoroom and remove the background from your ten best-selling product photos. See the difference before paying for anything.'
+			};
+
+			return {
+				summary,
+				stack: tools.slice(0, 5),
+				monthly_cost: monthlyCost,
+				first_step: firstStepMap[a.pain] || 'Start with the first tool above — it addresses your most urgent bottleneck.'
+			};
+		}
+
+		// ─────────────────────────────────────────
+		// RENDER RESULTS
+		// ─────────────────────────────────────────
+		function renderResults(data) {
+			const resultsEl = document.getElementById('results');
+
+			const tagClass = { 'Start here':'tag-first', 'Add next':'tag-next', 'When you scale':'tag-scale' };
+			const priorityFirst = data.stack.findIndex(t => t.priority === 'Start here');
+
+			let toolsHtml = data.stack.map((tool, i) => {
+				const cls = i === priorityFirst ? ' priority-first' : '';
+				const tc = tagClass[tool.priority] || 'tag-next';
+				const linkHtml = tool.link
+					? '<a href="' + tool.link + '" target="_blank" rel="noopener" class="tool-link">Try free</a>'
+					  + '<span class="aff-label">affiliate link</span>'
+					: '';
+				return `<div class="tool-card${cls}">
+					<div class="tool-info">
+						<span class="priority-tag ${tc}">${tool.priority}</span>
+						<div class="tool-name">${tool.name}</div>
+						<div class="tool-cat">${tool.category}</div>
+						<div class="tool-why">${tool.why}</div>
+						<div class="tool-meta">
+							<span class="tool-price">${tool.price}</span>
+							${linkHtml}
+						</div>
+					</div>
+				</div>`;
+			}).join('');
+
+			resultsEl.innerHTML = `
+				<div class="results-header">
+					<h2>Your personalised AI stack</h2>
+					<p>${data.summary}</p>
+					<span class="cost-badge">Estimated cost: ${data.monthly_cost}</span>
+				</div>
+				${toolsHtml}
+				<div class="first-step-box">
+					<strong>Your first step today</strong>
+					<p>${data.first_step}</p>
+				</div>
+				<p style="font-size:.78em;color:#aaa;margin-top:1.5em;line-height:1.6;">
+					Some links above are affiliate links — if you sign up through them we earn a small commission at no extra cost to you. We only recommend tools we've reviewed and tested.
+				</p>
+				<span class="retake-btn" onclick="retake()">Retake the quiz</span>
+			`;
+
+			resultsEl.style.display = 'block';
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
+		function retake() {
+			state = { current: 0, answers: {} };
+			document.getElementById('results').style.display = 'none';
+			document.getElementById('loading').style.display = 'none';
+			document.getElementById('progress').style.display = 'flex';
+			document.getElementById('error-box').style.display = 'none';
+			document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+			renderStep(0);
+		}
+
+		init();
+		</script>
+
+	</body>
+</html>
