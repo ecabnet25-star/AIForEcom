@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>I Built a Free AI Tool Recommender for E-Commerce Sellers — Here's How — AIForEcom</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="description" content="I built a free quiz that recommends personalised AI tool stacks for Shopify, Etsy, and Amazon sellers. Here's why I built it, how it works, and what I learned." />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			#site-nav {
+				position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+				background: rgba(36,41,67,0.97); display: flex;
+				align-items: center; justify-content: space-between;
+				padding: 0 2em; height: 54px;
+			}
+			#site-nav .nav-logo { font-size:1.1em; font-weight:600; color:#fff; text-decoration:none; letter-spacing:.03em; }
+			#site-nav ul { list-style:none; display:flex; gap:.2em; margin:0; padding:0; }
+			#site-nav ul li a {
+				color:rgba(255,255,255,.75); text-decoration:none; font-size:.82em;
+				letter-spacing:.08em; text-transform:uppercase; padding:.5em .9em;
+				border-radius:4px; transition:color .2s,background .2s;
+			}
+			#site-nav ul li a:hover { color:#fff; background:rgba(255,255,255,.1); }
+			#site-nav ul li a.nav-highlight { color:#fff; background:rgba(99,179,237,.25); border:1px solid rgba(99,179,237,.5); }
+			body { padding-top:54px; }
+
+			.article-wrap {
+				max-width: 740px;
+				margin: 0 auto;
+				padding: 4em 2em 5em;
+			}
+			.article-wrap .article-meta {
+				font-size: .78em; letter-spacing: .1em; text-transform: uppercase;
+				color: #6366f1; font-weight: 700; margin-bottom: .8em;
+			}
+			.article-wrap h1 { font-size: 2em; line-height: 1.25; color: #1a1a2e; margin-bottom: .6em; }
+			.article-wrap .article-intro {
+				font-size: 1.08em; color: #444; line-height: 1.7;
+				border-left: 3px solid #6366f1; padding-left: 1em; margin-bottom: 2em;
+			}
+			.article-wrap h2 {
+				font-size: 1.3em; color: #1a1a2e; margin: 2em 0 .5em;
+				padding-bottom: .3em; border-bottom: 1px solid #e8eaf0;
+			}
+			.article-wrap h3 { font-size: 1.05em; color: #1a1a2e; margin: 1.5em 0 .4em; font-weight: 700; }
+			.article-wrap p { font-size: .95em; line-height: 1.8; color: #333; margin-bottom: 1.2em; }
+			.article-wrap ul { margin: 0 0 1.2em 1.5em; font-size: .95em; line-height: 1.8; color: #333; }
+			.article-wrap ul li { list-style: disc; margin-bottom: .3em; }
+			.article-wrap code {
+				background: #f3f4f6; border-radius: 4px;
+				padding: .15em .4em; font-size: .88em;
+				font-family: 'Courier New', monospace; color: #4f46e5;
+			}
+			.article-wrap pre {
+				background: #1e1e2e; border-radius: 6px;
+				padding: 1.2em 1.4em; margin: 1.4em 0; overflow-x: auto;
+			}
+			.article-wrap pre code { background: none; color: #cdd6f4; font-size: .85em; padding: 0; }
+			.callout {
+				background: #f5f5ff; border: 1px solid #c7d2fe; border-radius: 8px;
+				padding: 1.2em 1.4em; margin: 1.8em 0;
+			}
+			.callout strong { color: #4f46e5; display: block; margin-bottom: .4em; font-size: .88em; text-transform: uppercase; letter-spacing: .08em; }
+			.callout p { margin: 0; font-size: .92em; color: #3730a3; line-height: 1.6; }
+			.try-box {
+				background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+				border-radius: 10px; padding: 1.8em 2em; margin: 2.5em 0;
+				text-align: center;
+			}
+			.try-box h3 { color: #fff !important; margin: 0 0 .5em !important; font-size: 1.2em !important; }
+			.try-box p { color: rgba(255,255,255,.9) !important; margin: 0 0 1.2em !important; font-size: .92em !important; }
+			.affiliate-note {
+				background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;
+				padding: 1em 1.2em; font-size: .82em; color: #166534; margin: 2.5em 0 1em;
+			}
+			.back-link {
+				display: inline-block; font-size: .82em; font-weight: 700;
+				letter-spacing: .06em; text-transform: uppercase;
+				color: #6366f1; text-decoration: none; margin-bottom: 2em;
+			}
+			.back-link::before { content: "← "; }
+			.back-link:hover { color: #4f46e5; }
+			@media screen and (max-width: 640px) {
+				#site-nav ul { display: none; }
+				.article-wrap { padding: 2.5em 1.2em 4em; }
+				.article-wrap h1 { font-size: 1.5em; }
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<nav id="site-nav">
+			<a href="index.html" class="nav-logo">AIForEcom</a>
+			<ul>
+				<li><a href="index.html#articles">Reviews</a></li>
+				<li><a href="index.html#articles">Comparisons</a></li>
+				<li><a href="index.html#articles">Tutorials</a></li>
+				<li><a href="index.html#tools">Top Tools</a></li>
+				<li><a href="stack-finder.html" class="nav-highlight">AI Stack Finder</a></li>
+			</ul>
+		</nav>
+
+		<section class="main style1">
+			<div class="article-wrap">
+
+				<a href="index.html" class="back-link">Back to all articles</a>
+
+				<p class="article-meta">Behind the build</p>
+				<h1>I built a free AI tool recommender for e-commerce sellers — here's how and why</h1>
+
+				<p class="article-intro">Most "best AI tools" articles give you the same 12 tools in a list and tell you to figure it out yourself. I wanted something better — a tool that asks you five questions and tells you specifically what to use for your situation. So I built one. Here's the whole story.</p>
+
+				<h2>The problem I kept running into</h2>
+
+				<p>When I started writing reviews of AI tools for e-commerce sellers, I noticed the same pattern every time. Someone would read a review of Jasper, think "this sounds good," sign up, realise it wasn't solving their actual problem, and cancel within a month.</p>
+
+				<p>The issue wasn't that Jasper is bad. The issue is that a solo Etsy seller who needs help writing customer message templates has completely different needs from a Shopify store owner with 200 SKUs who needs to write product descriptions at scale. Recommending the same tool to both of them isn't helpful — it's lazy.</p>
+
+				<p>I wanted to build something that asked a few simple questions — what platform, what stage, what's your biggest headache, what's your budget — and then gave a specific, honest answer. Not a list of every tool that might possibly be relevant. An actual recommendation.</p>
+
+				<h2>What I built</h2>
+
+				<p>The AI Stack Finder is a five-question quiz that outputs a personalised AI tool stack. It's free to use, takes about two minutes, and doesn't ask for your email.</p>
+
+				<p>The five questions are:</p>
+
+				<ul>
+					<li>What platform do you sell on? (Shopify, Etsy, Amazon, multiple, or not yet)</li>
+					<li>Where is your store right now? (revenue stage)</li>
+					<li>What's your biggest headache? (writing, support, email, SEO, photos)</li>
+					<li>What's your monthly tool budget? (from free to $150/month)</li>
+					<li>How comfortable are you with technology?</li>
+				</ul>
+
+				<p>Based on those answers it recommends three to five specific tools, ranked by priority — which one to start with, which to add next, and which to consider when you're scaling. Each recommendation explains exactly why it applies to that person's specific situation, not a generic description.</p>
+
+				<div class="try-box">
+					<h3>Try the AI Stack Finder</h3>
+					<p>5 questions. Personalised recommendation. Free, instant, no email required.</p>
+					<ul class="actions special" style="margin:0">
+						<li><a href="stack-finder.html" class="button primary">Find my AI stack</a></li>
+					</ul>
+				</div>
+
+				<h2>How it works technically</h2>
+
+				<p>The whole thing is built in plain HTML, CSS, and JavaScript — no framework, no build step, no dependencies. The quiz UI is a single HTML file that lives in the same repo as this site and deploys automatically to GitHub Pages when I push to main.</p>
+
+				<p>For the AI-powered recommendations, I built a Cloudflare Worker — a small serverless function that runs at Cloudflare's edge for free. The worker receives the quiz answers, formats them into a prompt, sends them to the Anthropic API (Claude), and returns a structured JSON recommendation. The API key lives securely in the worker's environment variables and never touches the frontend.</p>
+
+				<p>The prompt instructs Claude to recommend only from a curated list of tools I've actually reviewed, to never recommend paid tools to someone who selected a zero budget, and to always prioritise the tool that addresses the user's stated pain point first. It returns structured JSON that the frontend renders into a clean results card.</p>
+
+				<p>The clever part: if the API call fails for any reason — network error, rate limit, anything — the tool falls back silently to a rule-based recommendation engine built in JavaScript. Users get a good result either way. The fallback handles edge cases like Etsy sellers (who get eRank recommended regardless of what their pain point is, because Etsy SEO is different from everything else) and zero-budget users (who only see tools with genuinely useful free plans).</p>
+
+				<h2>The tech stack at a glance</h2>
+
+				<ul>
+					<li><strong>Frontend:</strong> Plain HTML, CSS, JavaScript — no framework</li>
+					<li><strong>Hosting:</strong> GitHub Pages (free)</li>
+					<li><strong>Serverless function:</strong> Cloudflare Workers (free tier)</li>
+					<li><strong>AI:</strong> Anthropic API — Claude Haiku for fast, cheap inference</li>
+					<li><strong>Database:</strong> None — stateless, no user data stored</li>
+					<li><strong>Total monthly cost:</strong> $0</li>
+				</ul>
+
+				<p>The Anthropic free credits cover several hundred quiz completions before you'd need to pay anything. At Claude Haiku's pricing, even after free credits run out, each quiz completion costs roughly $0.001. You'd need 10,000 completions a month before it cost more than $10.</p>
+
+				<h2>What I learned building it</h2>
+
+				<p>The hardest part wasn't the code. It was writing the system prompt. Getting Claude to return clean, structured JSON consistently — without wrapping it in markdown code blocks, without hallucinating tool names, without recommending paid tools to free-budget users — took more iteration than anything else.</p>
+
+				<p>The solution was being extremely specific in the prompt. Rather than saying "recommend appropriate tools," I gave it an explicit list of every tool it was allowed to recommend, the exact JSON schema it had to follow, and a list of hard rules (no paid tools for zero-budget users, always include eRank for Etsy sellers, etc.). Constrained prompts produce consistent outputs.</p>
+
+				<p>The other lesson: build the fallback first. I built the rule-based JavaScript recommendation engine before I connected the API. This meant the tool was useful and live before I'd written a single line of API code. By the time I added the AI layer, the fallback was already handling edge cases well, which made the AI output easier to validate — I could compare the two and see where Claude was doing better or worse than the rules.</p>
+
+				<div class="callout">
+					<strong>A note on affiliate links</strong>
+					<p>The tool recommends Tidio and Omnisend with affiliate links — those are the two programs I'm currently enrolled in. Every other tool in the recommendations links to the tool's own website with no tracking. I didn't build the quiz to funnel everyone toward the affiliate tools — the recommendations are based on what actually fits the user's answers, and both Tidio and Omnisend genuinely are the right tools for a lot of situations.</p>
+				</div>
+
+				<h2>What's next for the tool</h2>
+
+				<p>Right now the tool is stateless — it doesn't remember anything between sessions, doesn't store results, and doesn't require an account. That's intentional. The fastest path to something useful was to skip the database entirely and build something that works for anonymous users immediately.</p>
+
+				<p>As the site grows, I'd like to add a "save my stack" feature that emails your results to you — which also builds the email list. That requires a database (Supabase free tier) and an email provider, both of which I've kept out of scope for the first version deliberately.</p>
+
+				<p>I also want to expand the tool list as I review more products. Right now it covers the core categories well but is thin on analytics and automation tools. Those will be added as I write the corresponding reviews.</p>
+
+				<h2>If you want to build something similar</h2>
+
+				<p>The full approach — static site, Cloudflare Worker, Anthropic API — is genuinely free to run at low volume and surprisingly capable. If you want to build a similar tool for your own niche, the pattern works for any kind of recommendation engine: input a few parameters, format them into a prompt, return structured JSON, render it.</p>
+
+				<p>The Cloudflare Worker approach is important for keeping your API key secure. Never put an Anthropic API key in frontend JavaScript — anyone can view source and steal it. The worker acts as a proxy that holds the key server-side and only passes the formatted answers to the API.</p>
+
+				<p>The whole quiz is about 400 lines of HTML, CSS, and JavaScript. It doesn't need React, it doesn't need a build pipeline, and it doesn't need a database. Sometimes the simplest approach is the right one.</p>
+
+				<div class="affiliate-note">
+					Some links in this article are affiliate links. If you sign up for a tool through a link on this page, we may earn a small commission at no extra cost to you. We only recommend tools we've actually tested.
+				</div>
+
+			</div>
+		</section>
+
+		<section id="footer">
+			<ul class="copyright">
+				<li>&copy; 2026 AIForEcom</li>
+				<li><a href="affiliate-disclosure.html">Affiliate disclosure</a></li>
+				<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+			</ul>
+		</section>
+
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
